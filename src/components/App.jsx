@@ -9,11 +9,7 @@ export default class App extends React.Component {
   state = {
     key: "persist-key-0"
   }
-
-  constructor(props) {
-    super(props);
-  }
-
+  
   componentDidCatch(error,errorInfo) {
     this.setState({
       key: this.state.key + ".0"

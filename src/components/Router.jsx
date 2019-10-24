@@ -4,7 +4,7 @@ import { Route, HashRouter, Switch } from 'react-router-dom';
 import { connect } from 'react-redux'
 import { MainActions } from '../data/redux/actions';
 import * as Pages from './pages';
-import { GlobalStyles } from './atoms';
+import { GlobalStyles } from './elements';
 // import Theme from '../theme';
 
 

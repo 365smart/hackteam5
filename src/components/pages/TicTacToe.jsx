@@ -1,7 +1,7 @@
 import React from 'react';
-import { Button } from '../atoms';
+// import { Button } from '../elements';
 
-export default class Location extends React.Component {
+export default class TicTacToe extends React.Component {
   render() {
     return (
       <div>

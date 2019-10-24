@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "https://365smart.github.io/hackteam5/",
   "dependencies": {
+    "phaser": "^3.11.0",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
     "react-redux": "^7.1.1",

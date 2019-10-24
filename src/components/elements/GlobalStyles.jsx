@@ -1,8 +1,5 @@
-import React from 'react';
-import { createGlobalStyle, styled } from 'styled-components'
-import {
-  color,
-} from 'styled-system';
+import { createGlobalStyle } from 'styled-components'
+
 const GlobalStyle = createGlobalStyle`
   * {
     box-sizing: border-box;

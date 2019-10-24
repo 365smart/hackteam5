@@ -1,11 +1,11 @@
 import App from "./App";
 import Router from "./Router";
-import * as atoms from "./atoms";
+import * as elements from "./elements";
 import * as pages from "./pages";
 
 export {
     App,
     Router,
-    atoms,
+    elements,
     pages,
 }
