@@ -125,7 +125,7 @@ class PhaserScene extends Phaser.Scene {
 		this.physics.add.collider(this.stars, this.platforms);
 		this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
 
-		this.scoreText = this.add.text(16, 16, `score: ${score}`, { fontSize: '32px', fill: '#000' });
+		this.scoreText = this.add.text(16, 16, `score: $${(score/100).toFixed(2)}`, { fontSize: '32px', fill: '#000' });
 
 		let jsConfig = {
 			x: 480,
@@ -158,10 +158,10 @@ class PhaserScene extends Phaser.Scene {
 	}
 
 	collectStar(player, star) {
-			Audio.play(ScoreSound);
+		Audio.play(ScoreSound);
 	    star.disableBody(true, true);
 	    score--;
-	    this.scoreText.setText('Score: ' + score);
+	    this.scoreText.setText('Score: $' + (score / 100).toFixed(2));
 
 			if (score === 0) {
 						Audio.play(GameOverSound);
