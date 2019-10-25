@@ -52,9 +52,8 @@ class PhaserScene extends Phaser.Scene {
 				frameHeight: 64
 			}
 		);
-		this.load.image('up', getImg('up.png'));
-		this.load.image('left', getImg('left.png'));
-		this.load.image('right', getImg('right.png'));
+		let url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/plugins/dist/rexvirtualjoystickplugin.min.js';
+		this.load.plugin('rexvirtualjoystickplugin', url, true);
   }
 
   create() {
@@ -62,24 +61,23 @@ class PhaserScene extends Phaser.Scene {
 		this.platforms = this.physics.add.staticGroup();
 		this.platforms.create(430, 1064, 'ground').setScale(3).refreshBody();
 		this.platforms.create(510, 900, 'ground');
-		this.platforms.create(50, 750, 'ground');
-		this.platforms.create(960, 750, 'ground');
-		this.platforms.create(530, 600, 'ground');
-		this.platforms.create(50, 450, 'ground');
-		this.platforms.create(800, 450, 'ground');
+		this.platforms.create(50, 800, 'ground');
+		this.platforms.create(950, 750, 'ground');
+		this.platforms.create(480, 640, 'ground');
+		this.platforms.create(0, 450, 'ground');
+		this.platforms.create(900, 450, 'ground');
 		this.platforms.create(480, 320, 'ground');
 
 		const random = Math.floor((Math.random() * 500));
 		this.stars = this.physics.add.group({
-				key: 'star',
-				repeat: 6,
-				setXY: { x: 25, y: random, stepX: 150 }
+			key: 'star',
+			repeat: 5,
+			setXY: { x: 135, y: 0, stepX: 135 }
 		});
 
 		this.stars.children.iterate(function (child) {
-
+				child.enableBody(true, Phaser.Math.Between(50,910), Phaser.Math.Between(0,900), true, true);
 				child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-
 		});
 
 		this.player = this.physics.add.sprite(480, 250, 'joe');
@@ -92,7 +90,7 @@ class PhaserScene extends Phaser.Scene {
 		this.player.setBounce(0.2);
 		this.player.setCollideWorldBounds(true);
 
-		this.spawnInterval = setInterval(() => !isGameOver && this.spawnBomb(), 5000);
+		this.spawnInterval = setInterval(() => !isGameOver && this.spawnBomb(), 10000);
 
 
 		this.anims.create({
@@ -130,23 +128,35 @@ class PhaserScene extends Phaser.Scene {
 
 		this.scoreText = this.add.text(16, 16, `score: ${score}`, { fontSize: '32px', fill: '#000' });
 
-		this.cursors = this.input.keyboard.createCursorKeys();
+		let jsConfig = {
+			x: 480,
+			y: 1135,
+			radius: 75,
+			base: this.add.graphics().fillStyle(0x888888).fillCircle(0, 0, 75),
+			thumb: this.add.graphics().fillStyle(0xcccccc).fillCircle(0, 0,35),
+			dir: "4dir"
+		};
 
-		this.add.image(500, 1150, 'up')
-			.setInteractive()
-			.setScale(4)
-			.on('pointerdown', () => this.player.setVelocityY(-330) );
-
-		this.add.image(120, 1150, 'left')
-			.setInteractive()
-			.setScale(4)
-			.on('pointerdown', () => this.player.setVelocityX(-1600) );
-
-		this.add.image(900, 1150, 'right')
-			.setInteractive()
-			.setScale(4)
-			.on('pointerdown', () => this.player.setVelocityX(1600) );
+		this.joyStick = this.plugins.get("rexvirtualjoystickplugin").add(this, jsConfig).on("update", this.dumpJoyStickState, this);
+		this.dumpJoyStickState();
   }
+
+	dumpJoyStickState() {
+		this.cursors = this.joyStick.createCursorKeys();
+		if (this.cursors.left.isDown) {
+			this.player.setVelocityX(-200);
+			this.player.anims.play('left', true);
+		} else if (this.cursors.right.isDown) {
+			this.player.setVelocityX(200);
+			this.player.anims.play('right', true);
+		} else {
+			this.player.setVelocityX(0);
+			this.player.anims.play('turn');
+		}
+		if (this.cursors.up.isDown && this.player.body.touching.down) {
+			this.player.setVelocityY(-350);
+		}
+	}
 
 	collectStar(player, star) {
 			Audio.play(ScoreSound);

@@ -103,7 +103,14 @@ Api.endGame = (gameId) => {
   if (gameChangeListener) gameChangeListener.off();
 
   // remove kiosks
+  db.ref(Refs.game + '/' + gameId).once('value').then(s => {
+    let data = s.val();
+    let { player1, player2 } = data;
+    db.ref(Refs.kiosk + '/' + player1.kiosk).remove();
+    db.ref(Refs.kiosk + '/' + player2.kiosk).remove();
+  })
   // remove game
+  db.ref(Refs.game + '/' + gameId).remove()
 }
 
 export default Api;
