@@ -83,8 +83,9 @@ class TicTacToe extends React.Component {
   listen = (gameId) => {
     console.log("listening to gameState", gameId);
     Api.listenForGameChange(gameId, (data) => {
-      const { player1, player2, gameState, turn, isX } = data;
+      let { player1, player2, gameState, turn, isX } = data;
       console.log("update gameState", gameState);
+      if (gameState.indexOf('-') === -1) gameState = '---------';
       this.setState({ loading: false, gameState, player1, player2, gameId, turn, isX });
     })
   }
