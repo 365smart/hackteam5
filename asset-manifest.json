@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.js": "/hackteam5/static/js/main.f282035c.chunk.js",
-    "main.js.map": "/hackteam5/static/js/main.f282035c.chunk.js.map",
+    "main.js": "/hackteam5/static/js/main.75a0c475.chunk.js",
+    "main.js.map": "/hackteam5/static/js/main.75a0c475.chunk.js.map",
     "runtime-main.js": "/hackteam5/static/js/runtime-main.5abada03.js",
     "runtime-main.js.map": "/hackteam5/static/js/runtime-main.5abada03.js.map",
-    "static/js/2.70612b1b.chunk.js": "/hackteam5/static/js/2.70612b1b.chunk.js",
-    "static/js/2.70612b1b.chunk.js.map": "/hackteam5/static/js/2.70612b1b.chunk.js.map",
+    "static/js/2.3a841b30.chunk.js": "/hackteam5/static/js/2.3a841b30.chunk.js",
+    "static/js/2.3a841b30.chunk.js.map": "/hackteam5/static/js/2.3a841b30.chunk.js.map",
     "index.html": "/hackteam5/index.html",
-    "precache-manifest.84dfe648e2acfd38db71058c14130ae8.js": "/hackteam5/precache-manifest.84dfe648e2acfd38db71058c14130ae8.js",
+    "precache-manifest.ac59843585fb8f972c113214026a73ea.js": "/hackteam5/precache-manifest.ac59843585fb8f972c113214026a73ea.js",
     "service-worker.js": "/hackteam5/service-worker.js"
   },
   "entrypoints": [
     "static/js/runtime-main.5abada03.js",
-    "static/js/2.70612b1b.chunk.js",
-    "static/js/main.f282035c.chunk.js"
+    "static/js/2.3a841b30.chunk.js",
+    "static/js/main.75a0c475.chunk.js"
   ]
 }
