@@ -41,7 +41,7 @@ class Router extends React.Component {
         <Switch>
           <Route exact key={1}
             path={"/"}
-            component={withTheme(Pages.TicTacToe, theme)} />
+            component={withTheme(Pages.Arcade, theme)} />
           {routes}
         </Switch>
       </HashRouter>

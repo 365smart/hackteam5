@@ -4,9 +4,38 @@ import QueryString from 'query-string';
 import { withRouter } from 'react-router-dom';
 import { Modal } from '../elements';
 
+import ScoreSound from '../../assets/audio/in.mp3';
+import GameOverSound from '../../assets/audio/time.mp3';
+import SpawnSound from '../../assets/audio/welcome.mp3';
+
 const getImg = (name) => `https://raw.githubusercontent.com/ohitsdylan/ohitsdylan.github.io/master/assets/${name}`;
 
 // import { Button } from '../elements';
+class Audio {
+  constructor() {
+    this.init();
+  }
+
+  init() {
+    this.audioElement = document.createElement("AUDIO");                              // Append the text to <p>
+    document.body.appendChild(this.audioElement);
+  }
+
+  static self = new Audio();
+  static play = (audioFile) => {
+    console.log("play Audio File", audioFile);
+    try {
+      if (Audio.self.audioElement && audioFile) {
+        Audio.self.audioElement.src = audioFile;
+        Audio.self.audioElement.pause();
+        Audio.self.audioElement.currentTime = 0;
+        Audio.self.audioElement.play();
+      }
+    } catch(e) {
+      console.log("Audio.play() error", audioFile, e);
+    }
+  }
+}
 
 class PhaserScene extends Phaser.Scene {
   constructor() {
@@ -40,12 +69,11 @@ class PhaserScene extends Phaser.Scene {
 		this.platforms.create(800, 450, 'ground');
 		this.platforms.create(480, 320, 'ground');
 
-		const randomValue = Math.floor((Math.random() * 500));
-
+		const random = Math.floor((Math.random() * 500));
 		this.stars = this.physics.add.group({
 				key: 'star',
-				repeat: 5,
-				setXY: { x: 12, y: randomValue, stepX: 100 }
+				repeat: 6,
+				setXY: { x: 25, y: random, stepX: 150 }
 		});
 
 		this.stars.children.iterate(function (child) {
@@ -54,7 +82,7 @@ class PhaserScene extends Phaser.Scene {
 
 		});
 
-		this.player = this.physics.add.sprite(100, 450, 'joe');
+		this.player = this.physics.add.sprite(480, 250, 'joe');
 
 
 		this.bombs = this.physics.add.group();
@@ -64,7 +92,7 @@ class PhaserScene extends Phaser.Scene {
 		this.player.setBounce(0.2);
 		this.player.setCollideWorldBounds(true);
 
-		this.spawnInterval = setInterval(() => !isGameOver && this.spawnBomb(), 3000);
+		this.spawnInterval = setInterval(() => !isGameOver && this.spawnBomb(), 5000);
 
 
 		this.anims.create({
@@ -104,28 +132,30 @@ class PhaserScene extends Phaser.Scene {
 
 		this.cursors = this.input.keyboard.createCursorKeys();
 
-		const upArrow = this.add.image(500, 1150, 'up')
+		this.add.image(500, 1150, 'up')
 			.setInteractive()
 			.setScale(4)
 			.on('pointerdown', () => this.player.setVelocityY(-330) );
 
-		const leftArrow = this.add.image(120, 1150, 'left')
+		this.add.image(120, 1150, 'left')
 			.setInteractive()
 			.setScale(4)
 			.on('pointerdown', () => this.player.setVelocityX(-1600) );
 
-		const rightArrow = this.add.image(900, 1150, 'right')
+		this.add.image(900, 1150, 'right')
 			.setInteractive()
 			.setScale(4)
 			.on('pointerdown', () => this.player.setVelocityX(1600) );
   }
 
 	collectStar(player, star) {
+			Audio.play(ScoreSound);
 	    star.disableBody(true, true);
 	    score--;
 	    this.scoreText.setText('Score: ' + score);
 
-			if (score == 0) {
+			if (score === 0) {
+						Audio.play(GameOverSound);
 				    this.physics.pause();
 				    // player.setTint(0xff0000);
 				    player.anims.play('turn');
@@ -136,7 +166,6 @@ class PhaserScene extends Phaser.Scene {
 
 	    if (this.stars.countActive(true) === 0) {
         	this.stars.children.iterate(function (child) {
-							const randomValue = Math.floor((Math.random() * 500));
 							child.enableBody(true, child.x, 0, true, true);
 	        });
 
@@ -145,6 +174,7 @@ class PhaserScene extends Phaser.Scene {
 	}
 
 	spawnBomb() {
+		Audio.play(SpawnSound);
 		let x = (this.player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
 
 		let bomb = this.bombs.create(x, 16, 'bomb');
@@ -154,6 +184,7 @@ class PhaserScene extends Phaser.Scene {
 	}
 
 	hitBomb(player, bomb) {
+			Audio.play(GameOverSound);
 	    this.physics.pause();
 	    player.setTint(0xff0000);
 	    player.anims.play('turn');
@@ -206,12 +237,8 @@ class Platformer extends React.Component {
 	}
 
   componentDidMount() {
-    let path = this.props.location.pathname;
     let search = this.props.location.search;
-    let {
-      price,
-      kiosk
-    } = QueryString.parse(search);
+    let { price } = QueryString.parse(search);
 		score = parseInt(price * 100);
 		if (!game) {
 			game = new Phaser.Game(config);
@@ -251,8 +278,8 @@ class Platformer extends React.Component {
 				<div className="phaserContainer" id="phaser-container"></div>
 				{isGameOver && (
 					<Modal
-						color={score == 0 ? 'success' : 'white'}>
-						{score == 0 ? "You Win!" : "GameOver!"}
+						color={score === 0 ? 'success' : 'white'}>
+						{score === 0 ? "You Win!" : "GameOver!"}
 						<div style={{fontSize: 33}}>You saved ${savings}</div>
 					</Modal>
 				)}
