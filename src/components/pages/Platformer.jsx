@@ -68,7 +68,6 @@ class PhaserScene extends Phaser.Scene {
 		this.platforms.create(900, 450, 'ground');
 		this.platforms.create(480, 320, 'ground');
 
-		const random = Math.floor((Math.random() * 500));
 		this.stars = this.physics.add.group({
 			key: 'star',
 			repeat: 5,

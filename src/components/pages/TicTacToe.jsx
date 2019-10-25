@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import QueryString from 'query-string';
-import { Link, Modal, TicTacToeBoard } from '../elements';
+import { Modal, TicTacToeBoard } from '../elements';
 import Api from '../../data/Api';
 import styled from 'styled-components';
 import {
@@ -47,7 +47,7 @@ class TicTacToe extends React.Component {
   componentDidMount() {
     this._mounted = true;
     setTimeout(this.init, 1000);
-    setTimeout(this.goBack, 10000);
+    setTimeout(this.goBack, 15000);
   }
 
   goBack = () => {
@@ -81,8 +81,6 @@ class TicTacToe extends React.Component {
   }
 
   listen = (gameId) => {
-    let search = this.props.location.search;
-    let { kiosk } = QueryString.parse(search);
     console.log("listening to gameState", gameId);
     Api.listenForGameChange(gameId, (data) => {
       const { player1, player2, gameState, turn, isX } = data;
@@ -94,6 +92,10 @@ class TicTacToe extends React.Component {
   componentWillUnmount() {
     if (this.state.gameId) {
       Api.endGame(this.state.gameId);
+    } else {
+      let search = this.props.location.search;
+      let { kiosk } = QueryString.parse(search);
+      Api.removeKiosk(kiosk);
     }
     this._mounted = false;
   }
@@ -133,7 +135,7 @@ class TicTacToe extends React.Component {
     ]
     for (let i in lines) {
       let [a, b, c] = lines[i];
-      if (gameState[a] === gameState[b] && gameState[b] == gameState[c]) {
+      if (gameState[a] === gameState[b] && gameState[b] === gameState[c]) {
         let char = gameState[a];
         if (char === '-') continue;
         this.winner = char;
@@ -162,7 +164,7 @@ class TicTacToe extends React.Component {
       return <div><Modal>Waiting for opponent...</Modal></div>
     }
     let isGameOver = this.isGameOver(gameState);
-    let isMyTurn = isP1 && turn === 'player1' || !isP1 && turn === 'player2';
+    let isMyTurn = (isP1 && turn === 'player1') || (!isP1 && turn === 'player2');
     let vs = isP1 ? player2.kiosk : player1.kiosk;
     let playingAsX = (isMyTurn && isX) || (!isMyTurn && !isX);
     let isWinner = (this.winner === 'X' && playingAsX) || (this.winner === 'O' && !playingAsX);

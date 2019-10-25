@@ -90,17 +90,35 @@ Api.listenForGameStart = (kiosk, cb) => {
 Api.listenForGameChange = (gameId, cb) => {
     // listen to game ref
     console.log("waiting for game changes", gameId);
-    gameStartListener = db.ref(Refs.game).on('child_changed', d => {
+    gameChangeListener = db.ref(Refs.game).on('child_changed', d => {
       if (d.key !== gameId) return;
       let data = d.val();
       cb(data);
     })
 }
 
+Api.removeKiosk = (kiosk) => {
+  db.ref(Refs.queue).once('value').then(s => {
+    let q = s.val() || [];
+    if (!q) q = [];
+    let newQueue = [];
+    if (q.length > 0) {
+      q.forEach(i => {
+        if (i.kiosk !== kiosk) {
+          newQueue.push(i);
+        }
+      })
+      db.ref(Refs.queue).set(newQueue);
+    }
+  })
+  if (gameStartListener) db.ref(Refs.kiosk).off('child_changed', gameStartListener);
+  db.ref(Refs.kiosk + '/' + kiosk).remove()
+}
+
 Api.endGame = (gameId) => {
   // remove listeners
-  if (gameStartListener) gameStartListener.off();
-  if (gameChangeListener) gameChangeListener.off();
+  if (gameStartListener) db.ref(Refs.kiosk).off('child_changed', gameStartListener);
+  if (gameChangeListener) db.ref(Refs.game).off('child_changed', gameChangeListener);
 
   // remove kiosks
   db.ref(Refs.game + '/' + gameId).once('value').then(s => {

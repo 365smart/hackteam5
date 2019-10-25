@@ -36,7 +36,7 @@ const Square = styled.div`
 export default class TicTacToeBoard extends React.Component{
   onClick(v, i) {
     console.log("onClick", v, i)
-    let { gameState, canMove, onChange } = this.props;
+    let { canMove, onChange } = this.props;
       console.log("onClick", v, i, canMove)
     if (canMove && v === '-') {
       onChange(i);
